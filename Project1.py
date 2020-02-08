@@ -2,12 +2,19 @@
 # CS 5381 Analysis of Algorithms
 # Project 1
 
-# Need to get combined rank of each of each web page
+
 def combineRank(arr1, arr2, arr3, arr4, arr5):
     combarr = []
     for i in range(0, len(arr1)):
-        combarr.append(arr1[i] + arr2[i] + arr3[i] + arr4[i] + arr5[i])
-    return print("Combined Rank of sources is: " + str(combarr))
+        combarr.append(
+            arr1[i] + arr2[i] + arr3[i] + arr4[i] + arr5[i])  # Combines the ranks of each web page from every source
+
+    page = []  # create list that contains the combined rank list as well as the corresponding page
+    for x in range(10000):
+        page.append("Page {}".format(x))
+    combarr = list(zip(page, combarr))
+    combarr.sort(key=lambda k: k[1])  # Sort the combined rank list
+    return combarr
 
 
 # Need to do merge sort on arrays with inversion count
@@ -28,7 +35,17 @@ def main():
     s4 = [int(i) for i in s4]
     s5 = [line.strip() for line in open("source5.txt", "r")]
     s5 = [int(i) for i in s5]
-    combineRank(s1, s2, s3, s4, s5)
+    print("The combined rank of each web page is: ", combineRank(s1, s2, s3, s4, s5))
+
+    page = []
+    for x in range(10000):
+        page.append("Page {}".format(x))
+    # create list that contains the combined rank list as well as the corresponding page
+    c1 = list(zip(page, s1))
+    c2 = list(zip(page, s2))
+    c3 = list(zip(page, s3))
+    c4 = list(zip(page, s4))
+    c5 = list(zip(page, s5))
 
 
 main()
