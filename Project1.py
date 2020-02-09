@@ -2,7 +2,15 @@
 # CS 5381 Analysis of Algorithms
 # Project 1
 from _ast import operator
-
+def inversioncount(arr):
+    count = 0
+    n = len(arr)
+    arr = [k[1] for k in arr]
+    for i in range(n):
+        for j in range(i+1, n):
+            if arr[i]> arr[j]:
+                count += 1
+        return  count
 
 def combineRank(arr1, arr2, arr3, arr4, arr5):
     combarr = []
@@ -55,6 +63,7 @@ def main():
 
     c1 = formatlist(s1, crp)
     print(c1)
+    print("Number of inversion in Source 1 are: ", inversioncount(c1))
     c2 = formatlist(s2, crp)
     c3 = formatlist(s3, crp)
     c4 = formatlist(s4, crp)
