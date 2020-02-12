@@ -44,60 +44,61 @@ def formatlist(l1, l2):
 # Sort
 def mergeSort(arr):
     n = len(arr)
-    temp_arr = [0] * n  # Temp list created to count inversions
-    return _mergeSort(arr, temp_arr, 0, n - 1)
+    temp = [0] * n  # Temp list created to count inversions
+    return _mergeSort(arr, temp, 0, n - 1)
 
 
-def _mergeSort(arr, temp_arr, left, right):
-    inv_count = 0
+def _mergeSort(arr, temp, left, right):
+    inversion= 0
 
     if left < right:
         mid = (left + right) // 2
-        inv_count += _mergeSort(arr, temp_arr, left, mid)  # get the inversion count for the left subarray
-        inv_count += _mergeSort(arr, temp_arr, mid + 1, right)  # get the inversion count for the right subarray
-        inv_count += merge(arr, temp_arr, left, mid, right)  # get the inversion count once two subarrays are combined
-    return inv_count
+        inversion += _mergeSort(arr, temp, left, mid)  # get the inversion count for the left subarray
+        inversion += _mergeSort(arr, temp, mid + 1, right)  # get the inversion count for the right subarray
+        inversion += merge(arr, temp, left, mid, right)  # get the inversion count once two subarrays are combined
+    return inversion
 
 
 # Merge left and right subarrays into single sorted-array
-def merge(arr, temp_arr, left, mid, right):
+def merge(arr, temp, left, mid, right):
     i = left
     j = mid + 1
     k = left
-    inv_count = 0
+    inversion = 0
 
     while i <= mid and j <= right:
         if arr[i] <= arr[j]:
-            temp_arr[k] = arr[i]
+            temp[k] = arr[i]
             k += 1
             i += 1
         else:  # Inversion will occur.
-            temp_arr[k] = arr[j]
-            inv_count += (mid - i + 1)
+            temp[k] = arr[j]
+            inversion += (mid - i + 1)
             k += 1
             j += 1
 
     # Copy the remaining elements of left subarray into temporary array
     while i <= mid:
-        temp_arr[k] = arr[i]
+        temp[k] = arr[i]
         k += 1
         i += 1
 
     # Copy the remaining elements of right subarray into temporary array
     while j <= right:
-        temp_arr[k] = arr[j]
+        temp[k] = arr[j]
         k += 1
         j += 1
 
     # Copy the sorted subarray into Original array
-    for loop_var in range(left, right + 1):
-        arr[loop_var] = temp_arr[loop_var]
+    for z in range(left, right + 1):
+        arr[z] = temp[z]
 
-    return inv_count
+    return inversion
 
 
 # " " quick sort " "
 def quickSort(arr):
+    inv =0
     if len(arr) <= 1:  # Don't need to sort an empty list or list of size 1
         return arr
 
@@ -115,7 +116,6 @@ def quickSort(arr):
             equal.append(i)
     # recursively call quick sort on less and greater, then concatenate the three lists
     return quickSort(less) + equal + quickSort(greater)
-
 
 # " " algorithm of choice " "
 
@@ -142,6 +142,7 @@ def main():
     print("Out: ", out)
     #  print("Number of inversion in Source 1 are: ", inversioncount(c1))
     print("Merge sort Num of inversions: ", mergeSort(out))
+    print("QuickSort + Inversions left: ", quickSort(out))
     c2 = formatlist(s2, crp)
     c3 = formatlist(s3, crp)
     c4 = formatlist(s4, crp)
