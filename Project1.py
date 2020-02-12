@@ -1,7 +1,7 @@
 # Justin Rodriguez
 # CS 5381 Analysis of Algorithms
 # Project 1
-from _ast import operator
+import random
 
 
 def inversioncount(arr):
@@ -97,6 +97,25 @@ def merge(arr, temp_arr, left, mid, right):
 
 
 # " " quick sort " "
+def quickSort(arr):
+    if len(arr) <= 1:  # Don't need to sort an empty list or list of size 1
+        return arr
+
+    pivot = random.choice(arr)  # Pick pivot for sort by selecting random element in list
+    less = []  # Create list that will be used for elements less than pivot
+    equal = []  # Create list that will be used for elements greater than pivot
+    greater = []  # Create list that will be used for element that is equal to pivot
+
+    for i in arr:  # traverse list
+        if i < pivot:  # if current element is less than pivot append to less
+            less.append(i)
+        elif i > pivot:  # if current element is greater than pivot append to greater
+            greater.append(i)
+        else:  # if current element is pivot append to to equal
+            equal.append(i)
+    # recursively call quick sort on less and greater, then concatenate the three lists
+    return quickSort(less) + equal + quickSort(greater)
+
 
 # " " algorithm of choice " "
 
@@ -113,23 +132,20 @@ def main():
     s5 = [int(i) for i in s5]
     a1 = [1, 20, 6, 4, 5]
     cr = combineRank(s1, s2, s3, s4, s5)
-    print("The combined rank of each web page is: ", cr)
+    print("The combined rank of each web page (now sorted) is: ", cr)
 
     crp = [i[0] for i in cr]
 
     c1 = formatlist(s1, crp)
     print("Formatted list: ", c1)
     out = [item[1] for item in c1]
-    print("Work: ", out)
+    print("Out: ", out)
     #  print("Number of inversion in Source 1 are: ", inversioncount(c1))
     print("Merge sort Num of inversions: ", mergeSort(out))
     c2 = formatlist(s2, crp)
     c3 = formatlist(s3, crp)
     c4 = formatlist(s4, crp)
     c5 = formatlist(s5, crp)
-
-    # create list that contains the combined rank list as well as the corresponding page
-    # c1 = list(zip(page, s1))
 
 
 main()
