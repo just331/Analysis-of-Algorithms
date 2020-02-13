@@ -2,8 +2,22 @@
 # CS 5381 Analysis of Algorithms
 # Project 1
 import random
+import time
 
 
+def timing(f):
+    def wrap(*args):
+        time1 = time.time()
+        ret = f(*args)
+        time2 = time.time()
+        print('{:s} function took {:.3f} ms'.format(f.__name__, (time2 - time1) * 1000.0))
+
+        return ret
+
+    return wrap
+
+
+@timing
 def inversioncount(arr):
     count = 0
     n = len(arr)
@@ -42,6 +56,7 @@ def formatlist(l1, l2):
 
 # Need to do merge sort on arrays with inversion count
 # Sort
+@timing
 def mergeSort(arr):
     n = len(arr)
     temp = [0] * n  # Temp list created to count inversions
@@ -49,7 +64,7 @@ def mergeSort(arr):
 
 
 def _mergeSort(arr, temp, left, right):
-    inversion= 0
+    inversion = 0
 
     if left < right:
         mid = (left + right) // 2
@@ -96,28 +111,65 @@ def merge(arr, temp, left, mid, right):
     return inversion
 
 
-# " " quick sort " "
-def quickSort(arr):
-    inv =0
-    if len(arr) <= 1:  # Don't need to sort an empty list or list of size 1
-        return arr
 
-    pivot = random.choice(arr)  # Pick pivot for sort by selecting random element in list
+def mergeInversion(arr):
+    if len(arr) == 1:
+        return arr, 0
+    else:
+        left = arr[:len(arr)//2]
+        right = arr[len(arr)//2:]
+
+        left, left_inv = mergeInversion(left)
+        right, right_inv = mergeInversion(right)
+        temp = []
+
+        i = 0
+        j = 0
+        inversion_count = 0 + left_inv + right_inv
+
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+                temp.append(left[i])
+                i += 1
+        else:
+                temp.append(right[j])
+                j += 1
+                inversion_count += (len(left)-i)
+    temp += left[i:]
+    temp += right[j:]
+
+    return temp, inversion_count
+
+
+#  Quality functions
+#  Normalize quality
+#  adjust number of inversions
+
+# " " algorithm of choice " "
+
+
+@timing
+def quickSort(arr):
+    #  pivot = random.choice(arr)  # Pick pivot for sort by selecting random element in list
+    inversion_count = 0  # to count number of inversion that occur during sort
     less = []  # Create list that will be used for elements less than pivot
     equal = []  # Create list that will be used for elements greater than pivot
     greater = []  # Create list that will be used for element that is equal to pivot
 
-    for i in arr:  # traverse list
-        if i < pivot:  # if current element is less than pivot append to less
-            less.append(i)
-        elif i > pivot:  # if current element is greater than pivot append to greater
-            greater.append(i)
-        else:  # if current element is pivot append to to equal
-            equal.append(i)
-    # recursively call quick sort on less and greater, then concatenate the three lists
-    return quickSort(less) + equal + quickSort(greater)
+    if len(arr) > 1:  # Only care about sorting non-empty/size 1 lists
+        pivot = arr[0]  # Set pivot to be first element in list
+        for i in arr:  # traverse list
+            if i < pivot:  # if current element is less than pivot append to less
+                less.append(i)
+            elif i > pivot:  # if current element is greater than pivot append to greater
+                greater.append(i)
+            else:  # if current element is pivot append to to equal
+                equal.append(i)
+        return quickSort(less) + equal + quickSort(
+            greater)  # recursively call quick sort on less and greater, then concatenate the three lists
+    else:  # Don't need to sort an empty list or list of size 1
+        return arr
 
-# " " algorithm of choice " "
 
 def main():
     s1 = [line.strip() for line in open("data/source1.txt", "r")]
@@ -140,9 +192,11 @@ def main():
     print("Formatted list: ", c1)
     out = [item[1] for item in c1]
     print("Out: ", out)
-    #  print("Number of inversion in Source 1 are: ", inversioncount(c1))
-    print("Merge sort Num of inversions: ", mergeSort(out))
-    print("QuickSort + Inversions left: ", quickSort(out))
+    print("Number of inversion in Source 1 are: ", inversioncount(c1))
+    #  print("Quicksort: ", quickSort(out))
+    #inversioncount(c1)
+    print("Merge sort Num of inversions: ", mergeInversion(out))
+    print("Final Out: {}".format(out))
     c2 = formatlist(s2, crp)
     c3 = formatlist(s3, crp)
     c4 = formatlist(s4, crp)
