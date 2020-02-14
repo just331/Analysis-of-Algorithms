@@ -136,10 +136,13 @@ def sourceQuality(source_inv):
 
 
 def callAlgorithms(arr):
+    s = quickSortInversion(arr)
+    q = sourceQuality(s)*100
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Mergesort Inversion Count for: ", mergeInversion(arr)[1])
     print("BIT: ", binaryTreeInversion(arr))
     print("Quicksort Inversion Count: ", quickSortInversion(arr))
+    print("Quality of source is: {}%".format(q))
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
@@ -154,7 +157,7 @@ def main():
     s4 = [int(i) for i in d4]  # Turn data from file into list of ints and save to s4
     d5 = [line.strip() for line in open("data/source5.txt", "r")]  # Read in the data file and save to d5
     s5 = [int(i) for i in d5]  # Turn data from file into list of ints and save to s5
-
+    a1 = [1,2, 3, 5]
     cr = combineRank(s1, s2, s3, s4, s5)  # Get the combined rank of every page from each source and save to cr
     print("The combined rank of each web page (now sorted) is: ", cr)
 
@@ -175,5 +178,6 @@ def main():
     new_s5 = [item[1] for item in formatlist(s5, crp)]
     callAlgorithms(new_s5)
 
+    callAlgorithms(a1)
 
 main()
