@@ -1,10 +1,10 @@
 # Justin Rodriguez
 # CS 5381 Analysis of Algorithms
 # Project 1
-import random
 import time
 
 
+# Cite
 def timing(f):
     def wrap(*args):
         time1 = time.time()
@@ -17,8 +17,7 @@ def timing(f):
     return wrap
 
 
-@timing
-def inversioncount(arr):
+def inversioncount(arr):  # Standard way to count inversion based on algorithm given during lecture
     count = 0
     n = len(arr)
     arr = [k[1] for k in arr]
@@ -27,6 +26,18 @@ def inversioncount(arr):
             if arr[i] > arr[j]:
                 count += 1
     return count
+
+
+# Function that takes one list and sorts according to order of another list (Combined Rank)
+def formatlist(l1, l2):
+    page = []
+    for x in range(10000):  # Create list of 10000 with corresponding page number
+        page.append("Page {}".format(x))
+
+    l1 = list(zip(page, l1))  # Give current list corresponding page number
+    # Sort the given list based on order of combined ranked list
+    dic = {v: j for j, v in enumerate(l2)}
+    return sorted(l1, key=lambda p: dic[p[0]])
 
 
 def combineRank(arr1, arr2, arr3, arr4, arr5):
@@ -43,164 +54,126 @@ def combineRank(arr1, arr2, arr3, arr4, arr5):
     return combarr
 
 
-def formatlist(l1, l2):
-    page = []
-    for x in range(10000):
-        page.append("Page {}".format(x))
-
-    l1 = list(zip(page, l1))
-
-    dic = {v: j for j, v in enumerate(l2)}
-    return sorted(l1, key=lambda p: dic[p[0]])
-
-
-# Need to do merge sort on arrays with inversion count
-# Sort
-@timing
-def mergeSort(arr):
-    n = len(arr)
-    temp = [0] * n  # Temp list created to count inversions
-    return _mergeSort(arr, temp, 0, n - 1)
-
-
-def _mergeSort(arr, temp, left, right):
-    inversion = 0
-
-    if left < right:
-        mid = (left + right) // 2
-        inversion += _mergeSort(arr, temp, left, mid)  # get the inversion count for the left subarray
-        inversion += _mergeSort(arr, temp, mid + 1, right)  # get the inversion count for the right subarray
-        inversion += merge(arr, temp, left, mid, right)  # get the inversion count once two subarrays are combined
-    return inversion
-
-
-# Merge left and right subarrays into single sorted-array
-def merge(arr, temp, left, mid, right):
-    i = left
-    j = mid + 1
-    k = left
-    inversion = 0
-
-    while i <= mid and j <= right:
-        if arr[i] <= arr[j]:
-            temp[k] = arr[i]
-            k += 1
-            i += 1
-        else:  # Inversion will occur.
-            temp[k] = arr[j]
-            inversion += (mid - i + 1)
-            k += 1
-            j += 1
-
-    # Copy the remaining elements of left subarray into temporary array
-    while i <= mid:
-        temp[k] = arr[i]
-        k += 1
-        i += 1
-
-    # Copy the remaining elements of right subarray into temporary array
-    while j <= right:
-        temp[k] = arr[j]
-        k += 1
-        j += 1
-
-    # Copy the sorted subarray into Original array
-    for z in range(left, right + 1):
-        arr[z] = temp[z]
-
-    return inversion
-
-
-
+# Modified Merge sort to count number of inversions
 def mergeInversion(arr):
-    if len(arr) == 1:
+    if len(arr) == 1:  # If array is size 1 or less there will be no inversions. Return array and 0
         return arr, 0
-    else:
-        left = arr[:len(arr)//2]
-        right = arr[len(arr)//2:]
+    else:  # If not of len 1 or less, array needs to be sorted
+        left = arr[:len(arr) // 2]  # Create left subarray that consists of elements to left of mid
+        right = arr[len(arr) // 2:]  # Create right subarray that consists of elements to right of mid
 
-        left, left_inv = mergeInversion(left)
-        right, right_inv = mergeInversion(right)
-        temp = []
+        left, left_inv = mergeInversion(left)  # Recursively call func to further decompose org array into single item
+        right, right_inv = mergeInversion(right)  # Recursively call func to further decompose array into single item
+        sort = []  # Create temp array to store sorted list from original array
 
-        i = 0
-        j = 0
-        inversion_count = 0 + left_inv + right_inv
+        i = 0  # var to index left subarray
+        j = 0  # var to index right subarray
+        inversion_count = left_inv + right_inv  # final inversion count will be the sum of left/right inversion count
 
-    while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
-                temp.append(left[i])
-                i += 1
-        else:
-                temp.append(right[j])
-                j += 1
-                inversion_count += (len(left)-i)
-    temp += left[i:]
-    temp += right[j:]
+    while i < len(left) and j < len(right):  # Traverse both left and right subarrays
+        if left[i] <= right[j]:  # No inversion will occur proceed to sort and check
+            sort.append(left[i])  # add current element to left subarray
+            i += 1
+        else:  # By definition (i > j) an inversion has occurred
+            sort.append(right[j])  # save element j to right subarray
+            j += 1
+            inversion_count += (len(left) - i)  # increment inversion count
+    # combine left and right subarrays into sorted array
+    sort += left[i:]
+    sort += right[j:]
 
-    return temp, inversion_count
+    return sort, inversion_count
 
 
-#  Quality functions
-#  Normalize quality
-#  adjust number of inversions
+# Helper function for quickSortInversion that divides a given array into two subarrays
+def quickSortDivide(arr):
+    less = []  # Create empty array for left subarray
+    greater = []  # Create empty array for right subarray
+    pivot = arr[-1]  # Let the pivot be the last element in the array
+    inversion_count = greater_inv_count = 0  # Set inversion count and right subarray count to 0
+
+    for i in arr:  # Traverse array
+        if i <= pivot:  # If current is less than pivot append to less subarray
+            less.append(i)
+            inversion_count += greater_inv_count  # Increase inversion count by what right subarray's is currently
+        else:  # if current is greater than pivot append to greater subarray
+            greater.append(i)
+            greater_inv_count += 1  # Increase inversion count by 1
+    return inversion_count, less, greater
+
+
+# Modified quick sort to count inversions during sort from source files
+def quickSortInversion(arr):
+    if len(arr) <= 1:  # If array size less is less than 2 we won't have an inversion
+        return 0
+    inversion_count, less, greater = quickSortDivide(arr)  # divide the array into 2 subarrays and get their inversions
+    less.pop()
+    return inversion_count + quickSortInversion(less) + quickSortInversion(greater)  # combine inversions
+
 
 # " " algorithm of choice " "
+def binaryTreeInversion(arr):
+    inversions = 0
+    temp = [0] * (len(arr) + 1)
+    rank = {v: i + 1 for i, v in enumerate(sorted(arr))}
+
+    for j in reversed(arr):
+        k = rank[j] - 1
+        while k:
+            inversions += temp[k]
+            k -= k & -k
+        k = rank[j]
+        while k <= len(arr):
+            temp[k] += 1
+            k += k & -k
+    return inversions
 
 
-@timing
-def quickSort(arr):
-    #  pivot = random.choice(arr)  # Pick pivot for sort by selecting random element in list
-    inversion_count = 0  # to count number of inversion that occur during sort
-    less = []  # Create list that will be used for elements less than pivot
-    equal = []  # Create list that will be used for elements greater than pivot
-    greater = []  # Create list that will be used for element that is equal to pivot
+# Function to determine quality of sources based on number of inversions (equation from lecture)
+def sourceQuality(source_inv):
+    quality = 1 / (1 + source_inv)  # Equation to calculate quality of a source given # of inversions
+    return quality
 
-    if len(arr) > 1:  # Only care about sorting non-empty/size 1 lists
-        pivot = arr[0]  # Set pivot to be first element in list
-        for i in arr:  # traverse list
-            if i < pivot:  # if current element is less than pivot append to less
-                less.append(i)
-            elif i > pivot:  # if current element is greater than pivot append to greater
-                greater.append(i)
-            else:  # if current element is pivot append to to equal
-                equal.append(i)
-        return quickSort(less) + equal + quickSort(
-            greater)  # recursively call quick sort on less and greater, then concatenate the three lists
-    else:  # Don't need to sort an empty list or list of size 1
-        return arr
+
+def callAlgorithms(arr):
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("Mergesort Inversion Count for: ", mergeInversion(arr)[1])
+    print("BIT: ", binaryTreeInversion(arr))
+    print("Quicksort Inversion Count: ", quickSortInversion(arr))
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
 def main():
-    s1 = [line.strip() for line in open("data/source1.txt", "r")]
-    s1 = [int(i) for i in s1]
-    s2 = [line.strip() for line in open("data/source2.txt", "r")]
-    s2 = [int(i) for i in s2]
-    s3 = [line.strip() for line in open("data/source3.txt", "r")]
-    s3 = [int(i) for i in s3]
-    s4 = [line.strip() for line in open("data/source4.txt", "r")]
-    s4 = [int(i) for i in s4]
-    s5 = [line.strip() for line in open("data/source5.txt", "r")]
-    s5 = [int(i) for i in s5]
-    a1 = [1, 20, 6, 4, 5]
-    cr = combineRank(s1, s2, s3, s4, s5)
+    d1 = [line.strip() for line in open("data/source1.txt", "r")]  # Read in the data file and save to d1
+    s1 = [int(i) for i in d1]  # Turn data from file into list of ints and save to s1
+    d2 = [line.strip() for line in open("data/source2.txt", "r")]  # Read in the data file and save to d2
+    s2 = [int(i) for i in d2]  # Turn data from file into list of ints and save to s2
+    d3 = [line.strip() for line in open("data/source3.txt", "r")]  # Read in the data file and save to d3
+    s3 = [int(i) for i in d3]  # Turn data from file into list of ints and save to s3
+    d4 = [line.strip() for line in open("data/source4.txt", "r")]  # Read in the data file and save to d4
+    s4 = [int(i) for i in d4]  # Turn data from file into list of ints and save to s4
+    d5 = [line.strip() for line in open("data/source5.txt", "r")]  # Read in the data file and save to d5
+    s5 = [int(i) for i in d5]  # Turn data from file into list of ints and save to s5
+
+    cr = combineRank(s1, s2, s3, s4, s5)  # Get the combined rank of every page from each source and save to cr
     print("The combined rank of each web page (now sorted) is: ", cr)
 
-    crp = [i[0] for i in cr]
+    crp = [i[0] for i in cr]  # Used to format sources to be list of tuples [(page #, rank)]
 
-    c1 = formatlist(s1, crp)
-    print("Formatted list: ", c1)
-    out = [item[1] for item in c1]
-    print("Out: ", out)
-    print("Number of inversion in Source 1 are: ", inversioncount(c1))
-    #  print("Quicksort: ", quickSort(out))
-    #inversioncount(c1)
-    print("Merge sort Num of inversions: ", mergeInversion(out))
-    print("Final Out: {}".format(out))
-    c2 = formatlist(s2, crp)
-    c3 = formatlist(s3, crp)
-    c4 = formatlist(s4, crp)
-    c5 = formatlist(s5, crp)
+    new_s1 = [item[1] for item in formatlist(s1, crp)]
+    callAlgorithms(new_s1)
+
+    new_s2 = [item[1] for item in formatlist(s2, crp)]
+    callAlgorithms(new_s2)
+
+    new_s3 = [item[1] for item in formatlist(s3, crp)]
+    callAlgorithms(new_s3)
+
+    new_s4 = [item[1] for item in formatlist(s4, crp)]
+    callAlgorithms(new_s4)
+
+    new_s5 = [item[1] for item in formatlist(s5, crp)]
+    callAlgorithms(new_s5)
 
 
 main()
