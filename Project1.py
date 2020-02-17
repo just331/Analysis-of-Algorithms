@@ -17,15 +17,18 @@ def timing(f):
     return wrap
 
 
-def inversioncount(arr):  # Standard way to count inversion based on algorithm given during lecture
-    count = 0
-    n = len(arr)
-    arr = [k[1] for k in arr]
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arr[i] > arr[j]:
-                count += 1
-    return count
+def combineRank(arr1, arr2, arr3, arr4, arr5):
+    combarr = []
+    for i in range(0, len(arr1)):
+        combarr.append(
+            arr1[i] + arr2[i] + arr3[i] + arr4[i] + arr5[i])  # Combines the ranks of each web page from every source
+
+    page = []  # create list that contains the combined rank list as well as the corresponding page
+    for x in range(10000):
+        page.append("Page {}".format(x))
+    combarr = list(zip(page, combarr))
+    combarr.sort(key=lambda k: k[1])  # Sort the combined rank list
+    return combarr
 
 
 # Function that takes one list and sorts according to order of another list (Combined Rank)
@@ -40,18 +43,15 @@ def formatlist(l1, l2):
     return sorted(l1, key=lambda p: dic[p[0]])
 
 
-def combineRank(arr1, arr2, arr3, arr4, arr5):
-    combarr = []
-    for i in range(0, len(arr1)):
-        combarr.append(
-            arr1[i] + arr2[i] + arr3[i] + arr4[i] + arr5[i])  # Combines the ranks of each web page from every source
-
-    page = []  # create list that contains the combined rank list as well as the corresponding page
-    for x in range(10000):
-        page.append("Page {}".format(x))
-    combarr = list(zip(page, combarr))
-    combarr.sort(key=lambda k: k[1])  # Sort the combined rank list
-    return combarr
+def inversioncount(arr):  # Standard way to count inversion based on algorithm given during lecture
+    count = 0
+    n = len(arr)
+    arr = [k[1] for k in arr]
+    for i in range(n):
+        for j in range(i + 1, n):
+            if arr[i] > arr[j]:
+                count += 1
+    return count
 
 
 # Modified Merge sort to count number of inversions
@@ -135,13 +135,13 @@ def sourceQuality(source_inv):
     return quality
 
 
-def callAlgorithms(arr):
+def callAlgorithms(arr, n):
     s = quickSortInversion(arr)
-    q = sourceQuality(s)*100
+    q = sourceQuality(s) * 100
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print("Mergesort Inversion Count for: ", mergeInversion(arr)[1])
-    print("BIT: ", binaryTreeInversion(arr))
-    print("Quicksort Inversion Count: ", quickSortInversion(arr))
+    print("Mergesort Inversion Count for Source {}: ".format(n), mergeInversion(arr)[1])
+    print("BIT Inversion Count for Source {}: ".format(n), binaryTreeInversion(arr))
+    print("Quicksort Inversion Count for Source {}: ".format(n), quickSortInversion(arr))
     print("Quality of source is: {}%".format(q))
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
@@ -157,27 +157,29 @@ def main():
     s4 = [int(i) for i in d4]  # Turn data from file into list of ints and save to s4
     d5 = [line.strip() for line in open("data/source5.txt", "r")]  # Read in the data file and save to d5
     s5 = [int(i) for i in d5]  # Turn data from file into list of ints and save to s5
-    a1 = [1,2, 3, 5]
+    a1 = [1, 2, 3, 5]
     cr = combineRank(s1, s2, s3, s4, s5)  # Get the combined rank of every page from each source and save to cr
-    print("The combined rank of each web page (now sorted) is: ", cr)
+    print("The combined rank of each web page sorted is: ", cr)
 
-    crp = [i[0] for i in cr]  # Used to format sources to be list of tuples [(page #, rank)]
+
+'''    crp = [i[0] for i in cr]  # Used to format sources to be list of tuples [(page #, rank)]
 
     new_s1 = [item[1] for item in formatlist(s1, crp)]
-    callAlgorithms(new_s1)
+    callAlgorithms(new_s1, 1)
 
     new_s2 = [item[1] for item in formatlist(s2, crp)]
-    callAlgorithms(new_s2)
+    callAlgorithms(new_s2, 2)
 
     new_s3 = [item[1] for item in formatlist(s3, crp)]
-    callAlgorithms(new_s3)
+    callAlgorithms(new_s3, 3)
 
     new_s4 = [item[1] for item in formatlist(s4, crp)]
-    callAlgorithms(new_s4)
+    callAlgorithms(new_s4, 4)
 
     new_s5 = [item[1] for item in formatlist(s5, crp)]
-    callAlgorithms(new_s5)
+    callAlgorithms(new_s5, 5)
 
-    callAlgorithms(a1)
+    callAlgorithms(a1, 0)
+'''
 
 main()
