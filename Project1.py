@@ -45,11 +45,11 @@ def formatlist(l1, l2):
 
 def inversioncount(arr):  # Standard way to count inversion based on algorithm given during lecture
     count = 0
-    n = len(arr)
-    arr = [k[1] for k in arr]
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arr[i] > arr[j]:
+    n = len(arr)  # Used for loop management
+    arr = [k[1] for k in arr]  # Get rid of page number elements within list
+    for i in range(n):  # iterate through list
+        for j in range(i + 1, n):  # Get ith next position
+            if arr[i] > arr[j]:  # If the ith element is greater than its next, increment inversion count
                 count += 1
     return count
 
@@ -64,25 +64,25 @@ def mergeInversion(arr):
 
         left, left_inv = mergeInversion(left)  # Recursively call func to further decompose org array into single item
         right, right_inv = mergeInversion(right)  # Recursively call func to further decompose array into single item
-        sort = []  # Create temp array to store sorted list from original array
+        sortedlist = []  # Create temp array to store sorted list from original array
+        inversion_count = left_inv + right_inv  # final inversion count will be the sum of left/right inversion count
 
         i = 0  # var to index left subarray
         j = 0  # var to index right subarray
-        inversion_count = left_inv + right_inv  # final inversion count will be the sum of left/right inversion count
 
     while i < len(left) and j < len(right):  # Traverse both left and right subarrays
         if left[i] <= right[j]:  # No inversion will occur proceed to sort and check
-            sort.append(left[i])  # add current element to left subarray
+            sortedlist.append(left[i])  # add current element to left subarray
             i += 1
         else:  # By definition (i > j) an inversion has occurred
-            sort.append(right[j])  # save element j to right subarray
+            sortedlist.append(right[j])  # save element j to right subarray
             j += 1
             inversion_count += (len(left) - i)  # increment inversion count
     # combine left and right subarrays into sorted array
-    sort += left[i:]
-    sort += right[j:]
+    sortedlist += left[i:]
+    sortedlist += right[j:]
 
-    return sort, inversion_count
+    return sortedlist, inversion_count
 
 
 # Helper function for quickSortInversion that divides a given array into two subarrays
@@ -159,10 +159,11 @@ def main():
     s5 = [int(i) for i in d5]  # Turn data from file into list of ints and save to s5
     a1 = [1, 2, 3, 5]
     cr = combineRank(s1, s2, s3, s4, s5)  # Get the combined rank of every page from each source and save to cr
+    crp = [i[0] for i in cr]  # Used to format sources to be list of tuples [(page #, rank)]
     print("The combined rank of each web page sorted is: ", cr)
-
-
-'''    crp = [i[0] for i in cr]  # Used to format sources to be list of tuples [(page #, rank)]
+    print("Source 1 Original: ", s1)
+    print("Source 1 Formatted (Page #, Ranking): ", formatlist(s1, crp))
+'''    
 
     new_s1 = [item[1] for item in formatlist(s1, crp)]
     callAlgorithms(new_s1, 1)
