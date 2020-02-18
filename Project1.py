@@ -4,7 +4,8 @@
 import time
 
 
-# Cite
+# Function to get time it takes for function to complete its task
+# Taken from: https://stackoverflow.com/questions/5478351/python-time-measure-function
 def timing(f):
     def wrap(*args):
         time1 = time.time()
@@ -111,37 +112,32 @@ def quickSortInversion(arr):
     return inversion_count + quickSortInversion(less) + quickSortInversion(greater)  # combine inversions
 
 
-# " " algorithm of choice " "
-def binaryTreeInversion(arr):
-    inversions = 0
-    temp = [0] * (len(arr) + 1)
-    rank = {v: i + 1 for i, v in enumerate(sorted(arr))}
-
-    for j in reversed(arr):
-        k = rank[j] - 1
-        while k:
-            inversions += temp[k]
-            k -= k & -k
-        k = rank[j]
-        while k <= len(arr):
-            temp[k] += 1
-            k += k & -k
-    return inversions
+# Modified Bubble Sort Inversion count
+@timing
+def bubbleSortInverion(arr):
+    n = len(arr)
+    inv_count = 0
+    for i in range(n):  # Traverse through array
+        for j in range(0, n - i - 1):  # Look at current elements' previous
+            if arr[j] > arr[j + 1]:  # When current element is greater than next's, inversion has occurred
+                inv_count += 1
+                arr[j], arr[j+1] = arr[j + 1], arr[j]   # Swap elements S.T inversion no longer occurs
+    return arr, inv_count  # Return sorted array and inversion count
 
 
 # Function to determine quality of sources based on number of inversions (equation from lecture)
 def sourceQuality(source_inv):
     quality = 1 / (1 + source_inv)  # Equation to calculate quality of a source given # of inversions
-    return quality
+    return quality * 100
 
 
 def callAlgorithms(arr, n):
     s = quickSortInversion(arr)
-    q = sourceQuality(s) * 100
+    q = sourceQuality(s)
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Mergesort Inversion Count for Source {}: ".format(n), mergeInversion(arr)[1])
-    print("BIT Inversion Count for Source {}: ".format(n), binaryTreeInversion(arr))
     print("Quicksort Inversion Count for Source {}: ".format(n), quickSortInversion(arr))
+    print("Bubble Sort Inversion Count for Source {}: ".format(n), bubbleSortInverion(arr)[1])
     print("Quality of source is: {}%".format(q))
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
@@ -157,13 +153,11 @@ def main():
     s4 = [int(i) for i in d4]  # Turn data from file into list of ints and save to s4
     d5 = [line.strip() for line in open("data/source5.txt", "r")]  # Read in the data file and save to d5
     s5 = [int(i) for i in d5]  # Turn data from file into list of ints and save to s5
-    a1 = [1, 2, 3, 5]
     cr = combineRank(s1, s2, s3, s4, s5)  # Get the combined rank of every page from each source and save to cr
     crp = [i[0] for i in cr]  # Used to format sources to be list of tuples [(page #, rank)]
     print("The combined rank of each web page sorted is: ", cr)
     print("Source 1 Original: ", s1)
     print("Source 1 Formatted (Page #, Ranking): ", formatlist(s1, crp))
-'''    
 
     new_s1 = [item[1] for item in formatlist(s1, crp)]
     callAlgorithms(new_s1, 1)
@@ -180,7 +174,8 @@ def main():
     new_s5 = [item[1] for item in formatlist(s5, crp)]
     callAlgorithms(new_s5, 5)
 
+    a1 = [1, 2, 6, 3, 5]
     callAlgorithms(a1, 0)
-'''
+
 
 main()
