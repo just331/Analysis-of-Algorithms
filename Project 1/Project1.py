@@ -143,15 +143,15 @@ def callAlgorithms(arr, n):
 
 
 def main():
-    d1 = [line.strip() for line in open("data/source1.txt", "r")]  # Read in the data file and save to d1
+    d1 = [line.strip() for line in open("project 1/data/source1.txt", "r")]  # Read in the data file and save to d1
     s1 = [int(i) for i in d1]  # Turn data from file into list of ints and save to s1
-    d2 = [line.strip() for line in open("data/source2.txt", "r")]  # Read in the data file and save to d2
+    d2 = [line.strip() for line in open("project 1/data/source2.txt", "r")]  # Read in the data file and save to d2
     s2 = [int(i) for i in d2]  # Turn data from file into list of ints and save to s2
-    d3 = [line.strip() for line in open("data/source3.txt", "r")]  # Read in the data file and save to d3
+    d3 = [line.strip() for line in open("project 1/data/source3.txt", "r")]  # Read in the data file and save to d3
     s3 = [int(i) for i in d3]  # Turn data from file into list of ints and save to s3
-    d4 = [line.strip() for line in open("data/source4.txt", "r")]  # Read in the data file and save to d4
+    d4 = [line.strip() for line in open("project 1/data/source4.txt", "r")]  # Read in the data file and save to d4
     s4 = [int(i) for i in d4]  # Turn data from file into list of ints and save to s4
-    d5 = [line.strip() for line in open("data/source5.txt", "r")]  # Read in the data file and save to d5
+    d5 = [line.strip() for line in open("project 1/data/source5.txt", "r")]  # Read in the data file and save to d5
     s5 = [int(i) for i in d5]  # Turn data from file into list of ints and save to s5
     cr = combineRank(s1, s2, s3, s4, s5)  # Get the combined rank of every page from each source and save to cr
     crp = [i[0] for i in cr]  # Used to format sources to be list of tuples [(page #, rank)]
