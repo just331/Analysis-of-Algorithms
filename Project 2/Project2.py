@@ -26,7 +26,6 @@ class Graph:
     def topologicalSort_DFS(self):
         visited = [False] * self.V
         stack = []
-
         for i in range(self.V):
             if not visited[i]:
                 self.explore(i, visited, stack)
@@ -51,48 +50,60 @@ def main():
                "CS 3375: Computer Architecture", "CS 3383: Theory of Automata", "CS 4365: Software Engineering II",
                "CS 4352: Operating Systems",
                "CS 4354: Concepts of Database Systems", "CS 4366: Senior Capstone Project"]
-    print(len(courses))
     courses_dict = {i: courses[i] for i in range(0, len(courses))}
     for j in courses_dict:
-        print(str(j)+ ": " + courses_dict[j] + "\n")
+        print(str(j) + ": " + courses_dict[j] + "\n")
     keys = list(courses_dict.keys())
-    print(keys)
     g = Graph(29)
-    g.add(0, 3)
-    g.add(0, 8)
-    g.add(1, 4)
-    g.add(1, 5)
-    g.add(1, 9)
-    g.add(2, 6)
-    g.add(2, 17)
-    g.add(3, 7)
-    g.add(3, 12)
-    g.add(4, 10)
-    g.add(4, 16)
-    g.add(5, 11)
-    g.add(6, 17)
-    g.add(7, 13)
-    g.add(7, 18)
-    g.add(7, 19)
-    g.add(7, 22)
-    g.add(8, 19)
-    g.add(8, 24)
-    g.add(9, 12)
-    g.add(10, 20)
-    g.add(12, 23)
-    g.add(13, 22)
-    g.add(14, None)
-    g.add(15, None)
-    g.add(16, 19)
-    g.add(19, 26)
-    g.add(19, 27)
-    g.add(20, 22)
-    g.add(21, None)
-    g.add(22, 25)
-    g.add(23, 26)
-    g.add(25, 28)
-    print("Following is a Topological Sort of the given graph")
-  #  g.topologicalSort_DFS()
+    g2 = Graph(3)
+    g3 = Graph(6)
+    g.add(0, 2)  # CS 1411 --> CS 1382
+    g.add(0, 3)  # CS 1411 --> CS 1412
+    g.add(1, 4)  # MATH 1451 --> MATH 1452
+    g.add(1, 5)  # MATH 1451 --> PHYS 1408
+    g.add(1, 8)  # MATH 1451 --> ECE 2372
+    g.add(2, 16)  # CS 1382 --> CS 3364
+    g.add(2, 17)  # CS 1382 --> CS 3383
+    g.add(3, 6)  # CS 1412 --> CS 2413
+    g.add(3, 11)  # CS 1411 --> CS 2350
+    g.add(4, 7)  # MATH 1452 --> MATH 2450
+    g.add(4, 12)  # MATH 1452 --> MATH 2360
+    g.add(5, 9)  # PHYS 1408 --> PHYS 2401
+    g.add(6, 10)  # CS 2413 --> CS 2365
+    g.add(6, 13)  # CS 2413 --> CS 3361
+    g.add(6, 15)  # CS 2413 --> CS 3365
+    g.add(6, 16)  # CS 2413 --> CS 3364
+    g.add(7, 14)  # MATH 2450 --> MATH 3342
+    g.add(8, 11)  # ECE 2372 --> CS 2350
+    g.add(10, 15)  # CS 2365 --> CS 3365
+    g.add(11, 18)  # CS 2350 --> CS 3375
+    g.add(12, 16)  # MATH 2360 --> CS 3364
+    g.add(15, 21)  # CS 3365 --> CS CS 4365
+    g.add(14, 15)  # MATH 3342 --> CS 3365
+    g.add(16, 19)  # CS 3364 --> CS 4354
+    g.add(16, 20)  # CS 3364 --> CS 4352
+    g.add(18, 20)  # CS 3375 --> CS 4352
+    g.add(21, 22)  # CS 4365 --> CS 4366
+    g.add(23, 24)  # ENGL 1301 --> ENGL 1302
+    g.add(23, 25)  # ENGL 1301 --> ENGL 2311
+    g.add(24, 25)  # ENGL 1302 --> ENGL 2311
+
+    ####################### TEST GRAPHS ##########################
+    g2.add(0, 1)
+    g2.add(0, 2)
+    g2.add(1, 2)
+
+    g3.add(5, 2)
+    g3.add(5, 0)
+    g3.add(4, 0)
+    g3.add(4, 1)
+    g3.add(2, 3)
+    g3.add(3, 1)
+    ####################### TEST GRAPHS ##########################
+    print("The Topological Sort for the given graph is: ")
+    g.topologicalSort_DFS()
+    g2.topologicalSort_DFS()
+    g3.topologicalSort_DFS()
 
 
 if __name__ == "__main__":
