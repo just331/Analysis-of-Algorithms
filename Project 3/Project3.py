@@ -4,32 +4,13 @@
 # Project 3
 
 
-class Graph:
+class GraphADT:
     def __init__(self, nodes):
         self.N = nodes
         self.graph = []
 
     def addNode(self, u, v, w):
         self.graph.append([u, v, w])
-
-    def printSol(self, dist):
-        print("Node Distance from Source Node")
-        for i in range(self.N):
-            print("{0}\t\t{1}".format(i, dist[i]))
-
-    def BellmanFord(self, source):
-        dist = [float("Inf")] * self.N
-        dist[source] = 0
-
-        for _ in range(self.N - 1):
-            for u, v, w in self.graph:
-                if dist[u] != float("Inf") and dist[u] + w < dist[v]:
-                    dist[v] = dist[u] + w
-
-        self.printSol(dist)
-
-
-class GraphADT:
 
     def minDistance(self, dist, queue):
         minimum = float("Inf")
@@ -54,6 +35,22 @@ class GraphADT:
         for i in range(1, len(dist)):
             print("\n%d --> %d \t\t%d  \t\t\t\t\t" % (source, i, dist[i]), end=" "),
             self.printPath(root, i)
+
+    def printSol(self, dist):
+        print("Node Distance from Source Node")
+        for i in range(self.N):
+            print("{0}\t\t{1}".format(i, dist[i]))
+
+    def BellmanFord(self, source):
+        dist = [float("Inf")] * self.N
+        dist[source] = 0
+
+        for _ in range(self.N - 1):
+            for u, v, w in self.graph:
+                if dist[u] != float("Inf") and dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
+
+        self.printSol(dist)
 
     def dijkstra(self, graph, source):
         row = len(graph)
@@ -80,7 +77,7 @@ class GraphADT:
 
 
 def main():
-    g = GraphADT()
+    g = GraphADT(19)
     graph = [[0, 0, 150, 0, 30, 80, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 200, 0, 0, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [150, 200, 0, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -101,7 +98,7 @@ def main():
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 20, 40, 0, 350],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 350, 0]]
 
-    g2 = Graph(19)
+    g2 = GraphADT(19)
     g2.addNode(0, 2, 150)
     g2.addNode(0, 4, 30)
     g2.addNode(0, 5, 80)
